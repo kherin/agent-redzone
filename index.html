@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>RedZone Agent System</title>
+    <link rel="stylesheet" href="./vendor/tailwind/tailwind.min.css" />
+    <link rel="stylesheet" href="./vendor/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <script type="text/javascript" src="./vendor/leaflet/leaflet.js"></script>
+</head>
+
+<body>
+    <div class="grid grid-cols-3 gap-2 h-screen">
+        <div id="map" class="col-span-2"></div>
+        <div id="interface" class="col-span-1 bg-white drop-shadow-lg p-4">
+            <div class="flex flex-col">
+                <p class="font-sans text-center text-xl">Visualizing Infections in Red Zones</p>
+                <p class="font-sans text-gray-400">
+                    Using an Agent-based System as a decision-making tool when demarcating red zones
+                </p>
+                <p>
+                    <button id="generateFile">download</button>
+                </p>
+                <p>add buildings</p>
+                <p>open/closed for each building type</p>
+                <p>how many people can go out from each house/family</p>
+                <p>surname of each family</p>
+                <p>infection rate</p>
+                <p>when to exit ? (random, day, time)</p>
+                <p>curfew</p>
+                <p>agent speed/ticks</p>
+                <button type="Button" id="reset">Start</button>
+                <button type="Button" id="run">Run</button>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="./vendor/agentmaps/agentmaps.js"></script>
+    <script type="text/javascript" src="./vendor/pathtransform/L.Path.Tansform.js"></script>
+    <script type="text/javascript" src="./assets/js/config.js"></script>
+    <script type="text/javascript" src="./assets/js/state.js"></script>
+    <script type="text/javascript" src="./assets/js/features.js"></script>
+    <script type="text/javascript" src="./assets/js/map.js"></script>
+    <script type="text/javascript" src="./assets/js/interface.js"></script>
+    <script type="text/javascript" src="./assets/js/geo/vacoas/map_data.js"></script>
+    <script type="text/javascript" src="./assets/js/simulation.js"></script>
+</body>
+
+</html>

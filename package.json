@@ -1,0 +1,11 @@
+{
+  "name": "agent-redzone",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/kherin/agent-redzone.git",
+  "author": "Kherin <kherin.j.s.bundhoo@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "browser-sync start --server --files index.html assets/*"
+  }
+}
