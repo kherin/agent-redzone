@@ -33,10 +33,10 @@ function setup() {
   agentmap.infected_count = 0;
 
   //Set how infectious the disease is (the probability that someone nearby will get infected)
-  agentmap.infection_probability = 0.01;
+  agentmap.infection_probability = infection_probability;
 
   //Set the default speed for the agent.
-  agentmap.speed_controller = 3;
+  agentmap.speed_controller = speedAgent;
 
   //Do the following on each tick of the simulation.
   agentmap.controller = agentmapController;
@@ -52,7 +52,7 @@ function setup() {
   });
 
   //Infect a random 10% of the population on the agentmap.
-  infect(agentmap, 0.1);
+  infect(agentmap, population_infected);
 
   //Set the data displays and input options in the interface to their default values.
   // defaultInterface();
@@ -64,12 +64,10 @@ function setup() {
 
 //Given an agent, return an HTML string to embed in a popup.
 function agentPopupMaker(agent) {
-  var string = "Infected: " + agent.infected + "</br>";
-
-  if (agent.infected) {
-    string += "Recovers at tick: " + agent.recovery_tick;
-  }
-
+  var string = `
+    Infected: ${agent.infected}<br/>
+    Homebound: ${agent.homebound}
+    `;
   return string;
 }
 
@@ -87,7 +85,6 @@ function getZonedUnits(agentmap, residential_streets, commercial_streets) {
   //Find and store the units on the perimeter of the lower part of the neighborhood,
   //and along the streets in the upper part of the neighborhood.
   agentmap.units.eachLayer(function (unit) {
-    unit.bindPopup((e) => console.log("e", unit.getBounds()));
     var street_id = unit.street_id,
       street = agentmap.streets.getLayer(street_id),
       street_name = street.feature.properties.name;
@@ -103,6 +100,7 @@ function getZonedUnits(agentmap, residential_streets, commercial_streets) {
     //For each zoned unit, add an array to store which agents are in it for easy searching.
     unit.resident_ids = [];
   });
+  styleUnits(zoned_units.residential, zoned_units.commercial, agentmap);
 
   return zoned_units;
 }
@@ -121,15 +119,14 @@ function agentmapController() {
 //Return a GeoJSON feature representing an agent.
 function epidemicAgentMaker(id) {
   //Decide whether the agent will be homebound.
-  var homebound = Math.random() < 0.25 ? true : false;
+  var homebound = Math.random() <= homebound_percentage ? true : false;
 
   //Get a random residential unit and its center.
   var random_residential_index = Math.floor(
       Math.random() * this.zoned_units.residential.length
     ),
-    random_residential_unit_id = this.zoned_units.residential[
-      random_residential_index
-    ];
+    random_residential_unit_id =
+      this.zoned_units.residential[random_residential_index];
 
   //Store the residential unit's ID as the agent's home ID.
   var home_id = random_residential_unit_id;
@@ -166,10 +163,16 @@ function epidemicAgentMaker(id) {
   }
 
   //Get the agent's starting position.
-  var home_unit = this.units.getLayer(home_id),
-    home_center_coords = L.A.pointToCoordinateArray(home_unit.getCenter());
+  var home_unit = this.units.getLayer(home_id);
+  var home_center_coords = L.A.pointToCoordinateArray(home_unit.getCenter());
 
-  var feature = {
+  var agentColor = "green";
+
+  if (homebound) {
+    agentColor = "blue";
+  }
+
+  return {
     type: "Feature",
     properties: {
       place: {
@@ -177,8 +180,8 @@ function epidemicAgentMaker(id) {
         id: home_id,
       },
       layer_options: {
-        color: "blue",
-        radius: 0.5,
+        color: agentColor,
+        radius: radiusAgent,
       },
       recent_unit_id: home_id,
       homebound: homebound,
@@ -198,8 +201,6 @@ function epidemicAgentMaker(id) {
       coordinates: home_center_coords,
     },
   };
-
-  return feature;
 }
 
 //Given an agent, define its controller in a way conducive to the epidemic simulation.
@@ -269,8 +270,9 @@ function checkInfection(agent) {
   //Check whether the agent is in a unit. If so, if any other agents in the unit are infected,
   //infect it with a certain probability.
   if (agent.place.type === "unit" && agent.infected === false) {
-    var resident_ids = agent.agentmap.units.getLayer(agent.place.id)
-      .resident_ids;
+    var resident_ids = agent.agentmap.units.getLayer(
+      agent.place.id
+    ).resident_ids;
 
     for (var i = 0; i < resident_ids.length; i++) {
       var resident = agent.agentmap.agents.getLayer(resident_ids[i]);
@@ -294,15 +296,15 @@ function infectAgent(agent) {
   (agent.infected = true),
     //Have the agent recover in a random number of ticks under 2000 from the time it is infected.
     (agent.recovery_tick =
-      agent.agentmap.state.ticks + Math.floor(Math.random() * 2000));
-  agent.setStyle({ color: "red" });
+      agent.agentmap.state.ticks + Math.floor(recovery_rate * 2000));
+  agent.setStyle({ color: colorInfectedAgent });
 
   agent.agentmap.infected_count++;
   updateEpidemicStats(agent.agentmap);
 }
 
 function uninfectAgent(agent) {
-  (agent.infected = false), agent.setStyle({ color: "blue" });
+  (agent.infected = false), agent.setStyle({ color: "green" });
   agent.recoveryTick = -1;
 
   agent.agentmap.infected_count--;
@@ -418,4 +420,21 @@ function pick_random_n(array, n) {
   });
 
   return random_n;
+}
+
+function styleUnits(residential_units, commercial_units, agentmap) {
+  const residentialColor = "grey";
+  const commercialColor = "purple";
+
+  residential_units.forEach((residential_id) => {
+    agentmap.units._layers[residential_id].setStyle({
+      color: residentialColor,
+    });
+  });
+
+  commercial_units.forEach((commercial_id) => {
+    agentmap.units._layers[commercial_id].setStyle({
+      color: commercialColor,
+    });
+  });
 }

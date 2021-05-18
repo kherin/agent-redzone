@@ -7,5 +7,8 @@
   "license": "MIT",
   "scripts": {
     "start": "browser-sync start --server --files index.html assets/*"
+  },
+  "dependencies": {
+    "agentmaps-iconagents": "^2.1.1"
   }
 }

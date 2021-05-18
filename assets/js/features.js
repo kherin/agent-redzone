@@ -13,7 +13,6 @@ function drawFeature(latlng, map) {
 
   let newPolygon = L.polygon(bounding_coordinates, polygonOptions).addTo(map);
   newPolygon.transform.enable({ rotation: true, scaling: false });
-  newPolygon.addEventListener("click", onClickHandler, false);
   return newPolygon;
 }
 

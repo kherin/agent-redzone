@@ -12,7 +12,7 @@
 </head>
 
 <body>
-    <div class="grid grid-cols-3 gap-2 h-screen">
+    <div class="grid grid-cols-3 gap-y-5 h-screen">
         <div id="map" class="col-span-2"></div>
         <div id="interface" class="col-span-1 bg-white drop-shadow-lg p-4">
             <div class="flex flex-col">
@@ -20,19 +20,115 @@
                 <p class="font-sans text-gray-400">
                     Using an Agent-based System as a decision-making tool when demarcating red zones
                 </p>
-                <p>
-                    <button id="generateFile">download</button>
-                </p>
-                <p>add buildings</p>
-                <p>open/closed for each building type</p>
-                <p>how many people can go out from each house/family</p>
-                <p>surname of each family</p>
-                <p>infection rate</p>
-                <p>when to exit ? (random, day, time)</p>
-                <p>curfew</p>
-                <p>agent speed/ticks</p>
-                <button type="Button" id="reset">Start</button>
-                <button type="Button" id="run">Run</button>
+                <div class="grid grid-cols-1">
+                    <div id="Map Legend">
+                        <p class="font-sans text-pink-600">Map Legend</p>
+                        <div class="flex space-x-2">
+                            <span>Commercial</span>
+                            <div class="purple-pixel"></div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <span>Residential</span>
+                            <div class="grey-pixel"></div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <span>Unoccupied</span>
+                            <div class="green-pixel"></div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1">
+                        <div id="Agent Legend">
+                            <p class="font-sans text-pink-600">Agent Legend</p>
+                            <div class="flex space-x-2">
+                                <span>Homebound</span>
+                                <div class="agent blue-pixel"></div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <span>Healthy</span>
+                                <div class="agent green-pixel"></div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <span>Infected</span>
+                                <div class="agent red-pixel"></div>
+                            </div>
+                        </div>
+                        <div id="agentCustomisationSection">
+                            <p class="font-sans text-pink-600">Agent Customisation</p>
+                            <!-- COLOR PICKER -->
+                            <div id="infectedColorPickerSection">
+                                <label for="infectedColorPicker">Color of Infected Agent</label>
+                                <input type="color" id="infectedColorPicker" name="infectedColorPicker" value="red">
+                            </div>
+
+                            <!-- RADIUS -->
+                            <div id="radiusOfAgentSection">
+                                <label for="agentRadius">Select radius of agents:</label>
+                                <select name="agentRadius" id="agentRadius">
+                                    <option value="1">1px</option>
+                                    <option value="5">5px</option>
+                                    <option value="10">10px</option>
+                                </select>
+                            </div>
+
+                            <!-- SPEED -->
+                            <div id="speedOfAgentSection">
+                                <label for="agentSpeed">Select speed of movement of agents:</label>
+                                <select name="agentSpeed" id="agentSpeed">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="agentBehaviourSection">
+                            <p class="font-sans text-pink-600">Agent Behaviour</p>
+                            <!-- INFECTION RATE -->
+                            <div>
+                                <label class="font-sans text-blue-600" for="infection_rate">Infection Rate</label>
+                                <div id="currentInfectionRate">Current Infection Rate: 1</div>
+                                <input type="range" id="infection_rate" name="infection_rate" min="0" max="100"
+                                    value="1" step="1">
+                            </div>
+
+                            <!-- Percentage of population which is homebound-->
+                            <div>
+                                <label class="font-sans text-blue-600" for="homebound_percentage">% of population which
+                                    is
+                                    homebound</label>
+                                <div id="currentHomeboundPercentage">Current homebound %: 1</div>
+                                <input type="range" id="homebound_percentage" name="homebound_percentage" min="0"
+                                    max="100" value="1" step="1">
+                            </div>
+
+                            <!-- Recovery Rate -->
+                            <div>
+                                <label class="font-sans text-blue-600" for="recovery_rate">Recovery rate of each
+                                    agent</label>
+                                <div id="currentRecoverRate">Current Recovery Rate: 1</div>
+                                <input type="range" id="recovery_rate" name="recovery_rate" min="0" max="10" value="0"
+                                    step="1">
+                            </div>
+
+                            <!-- % of population already infected -->
+                            <div>
+                                <label class="font-sans text-blue-600" for="infectedPercentage">% of population which is
+                                    already infected</label>
+                                <div id="currentInfectedPercentage">Current % infected: 1</div>
+                                <input type="range" id="infectedPercentage" name="infectedPercentage" min="0" max="100"
+                                    value="1" step="1">
+                            </div>
+
+                        </div>
+                        <div id="simulationControls">
+                            <button type="Button" id="reset" class="bg-red-500 hover:bg-red-700">Start</button>
+                            <button type="Button" id="run" class="bg-blue-300 hover:bg-blue-400">Run</button>
+                        </div>
+                        <div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
